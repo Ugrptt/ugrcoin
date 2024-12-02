@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Uyumlu Oyun</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Ana içerik -->
+        <div id="page-content">
+            <!-- Home Page -->
+            <div id="home-page">
+                <!-- Puan ve Seviye Gösterimi -->
+                <div id="score-container">
+                    <div id="score">
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" fill="#FFD700" />
+                            <text x="12" y="16" font-family="Arial" font-size="12" fill="white" text-anchor="middle">UGR</text>
+                        </svg>
+                        <span id="score-value">UGR: 0</span>
+                    </div>
+                    <div id="level-system">
+                        <span id="level-display">Level 1</span>
+                        <div id="level-progress-container">
+                            <div id="level-progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logo -->
+                <img id="logo" src="logo.png" alt="Logo">
+
+                <!-- Mining Sistemi -->
+                <div id="mining-system">
+                    <div id="mining-box">
+                        <h2>Mining Sistemi</h2>
+                        <p>Altın kazanmaya başla ve ödüller kazan!</p>
+                        <div id="countdown">08:00:00</div>
+                        <button id="claim-button">Claim & Start Mining</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friends Page -->
+            <div id="friends-page" style="display: none;">
+                <img src="balloon.png" alt="Balloon" class="balloon-icon">
+                <h2 class="invite-header">Davet ettiğiniz arkadaşlar</h2>
+                <p>Arkadaşlarınızı davet ederek ekstra UGR kazanın!</p>
+            </div>
+
+            <!-- Earn Page -->
+            <div id="earn-page" style="display: none;">
+                <h2>Puan Kazanma Görevleri</h2>
+                <p>Daha fazla UGR kazanmak için görevleri tamamla!</p>
+                <div class="task">
+                    <img src="twitter.png" alt="Twitter" class="social-icon">
+                    <span>Twitter'da Paylaş</span>
+                    <a href="https://twitter.com/share?url=YOUR_URL" target="_blank">
+                        <button class="task-button" data-points="1000">Görevi Tamamla (+1000 UGR)</button>
+                    </a>
+                </div>
+                <div class="task">
+                    <img src="telegram.png" alt="Telegram" class="social-icon">
+                    <span>Telegram'da Katıl</span>
+                    <a href="https://telegram.me/share/url?url=YOUR_URL" target="_blank">
+                        <button class="task-button" data-points="2000">Görevi Tamamla (+2000 UGR)</button>
+                    </a>
+                </div>
+                <div class="task">
+                    <img src="youtube.png" alt="YouTube" class="social-icon">
+                    <span>YouTube'da Videoyu İzle</span>
+                    <a href="YOUR_YOUTUBE_LINK" target="_blank">
+                        <button class="task-button" data-points="1500">Görevi Tamamla (+1500 UGR)</button>
+                    </a>
+                </div>
+                <div class="task">
+                    <img src="instagram.png" alt="Instagram" class="social-icon">
+                    <span>Instagram'da Takip Et</span>
+                    <a href="YOUR_INSTAGRAM_LINK" target="_blank">
+                        <button class="task-button" data-points="1000">Görevi Tamamla (+1000 UGR)</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alt Menü -->
+    <div id="footer">
+        <button class="nav-button" data-page="home-page">
+            <img src="home.png" alt="Home">
+        </button>
+        <button class="nav-button" data-page="friends-page">
+            <img src="friends.png" alt="Friends">
+        </button>
+        <button class="nav-button" data-page="earn-page">
+            <img src="earn.png" alt="Earn">
+        </button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
