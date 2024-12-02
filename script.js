@@ -181,20 +181,22 @@ navButtons.forEach(button => {
     });
 });
 
-// URL parametrelerini almak için yardımcı fonksiyon
-function getUrlParameter(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-}
+// Telegram WebApp'i başlat
+window.Telegram.WebApp.ready();
 
-// Sayfa yüklendiğinde kullanıcı adını al ve ekrana yazdır
+// Kullanıcı bilgilerini alma
+const telegramUser = window.Telegram.WebApp.initDataUnsafe.user;
+
+// Kullanıcı adı ya da ilk ad ve soyad bilgisi
+const username = telegramUser.username || `${telegramUser.first_name} ${telegramUser.last_name || ""}`;
+
+// Kullanıcı adını oyun ekranında gösterme
 window.onload = () => {
-    const username = getUrlParameter("username");
-    const usernameElement = document.getElementById("username");
+    const usernameDisplay = document.getElementById("username-display");
 
     if (username) {
-        usernameElement.textContent = `Hoşgeldin, ${username}!`;
+        usernameDisplay.textContent = `Hoşgeldin, ${username}!`;
     } else {
-        usernameElement.textContent = "Hoşgeldiniz!";
+        usernameDisplay.textContent = "Hoşgeldiniz!";
     }
 };
