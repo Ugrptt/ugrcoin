@@ -180,3 +180,21 @@ navButtons.forEach(button => {
         switchPage(pageId);
     });
 });
+
+// URL parametrelerini almak için yardımcı fonksiyon
+function getUrlParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// Sayfa yüklendiğinde kullanıcı adını al ve ekrana yazdır
+window.onload = () => {
+    const username = getUrlParameter("username");
+    const usernameElement = document.getElementById("username");
+
+    if (username) {
+        usernameElement.textContent = `Hoşgeldin, ${username}!`;
+    } else {
+        usernameElement.textContent = "Hoşgeldiniz!";
+    }
+};
