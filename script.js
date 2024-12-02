@@ -156,11 +156,13 @@ function switchPage(pageId) {
 // Varsayılan sayfa: Home Page
 switchPage('home-page');
 
-// Sayfa yüklendiğinde başlat
+// **Tek bir window.onload fonksiyonunda tüm işlemleri birleştirdik**
 window.onload = () => {
+    // Skor ve seviye güncelleme
     updateScore();
     updateLevelSystem();
 
+    // Geri sayımı başlat
     const countdownDisplay = document.getElementById("countdown");
     if (endTime > Date.now()) {
         startCountdown(countdownDisplay);
@@ -170,19 +172,31 @@ window.onload = () => {
         enableClaimButton();
     }
 
-    // Kullanıcı adı alma ve DOM'a yazma
+    // Telegram WebApp kullanıcı bilgilerini al ve DOM'a yaz
     if (window.Telegram && window.Telegram.WebApp) {
         const tg = window.Telegram.WebApp;
+
+        // WebApp hazır
         tg.ready();
 
-        const username = tg.initDataUnsafe?.user?.username || "Hoşgeldiniz!";
-        const firstName = tg.initDataUnsafe?.user?.first_name || "";
-        const lastName = tg.initDataUnsafe?.user?.last_name || "";
+        // initDataUnsafe içeriğini kontrol et
+        console.log("initDataUnsafe:", tg.initDataUnsafe);
 
-        if (username !== "Hoşgeldiniz!") {
-            usernameDisplay.textContent = `Hoşgeldiniz, @${username}!`;
-        } else if (firstName || lastName) {
-            usernameDisplay.textContent = `Hoşgeldiniz, ${firstName} ${lastName}!`;
+        const userData = tg.initDataUnsafe?.user;
+
+        if (userData) {
+            console.log("Kullanıcı bilgileri:", userData);
+            const username = userData.username || "Hoşgeldiniz!";
+            const firstName = userData.first_name || "";
+            const lastName = userData.last_name || "";
+
+            if (username !== "Hoşgeldiniz!") {
+                usernameDisplay.textContent = `Hoşgeldiniz, @${username}!`;
+            } else if (firstName || lastName) {
+                usernameDisplay.textContent = `Hoşgeldiniz, ${firstName} ${lastName}!`;
+            }
+        } else {
+            console.error("Kullanıcı bilgileri alınamadı.");
         }
     } else {
         console.error("Telegram WebApp API kullanılamıyor.");
