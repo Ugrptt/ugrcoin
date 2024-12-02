@@ -17,14 +17,15 @@ let xpToNextLevel = level * 1000;
 const scoreElement = document.getElementById('score-value');
 const levelDisplay = document.getElementById("level-display");
 const progressBar = document.getElementById("level-progress-bar");
+const usernameDisplay = document.getElementById("username-display");
 
 // Skoru ve level sistemini güncelle
 function updateScore() {
     scoreElement.textContent = `UGR: ${score}`;
-    scoreElement.classList.add('score-update'); // CSS sınıfını ekle
+    scoreElement.classList.add('score-update');
     setTimeout(() => {
-        scoreElement.classList.remove('score-update'); // CSS sınıfını kaldır
-    }, 500); // 0.5 saniye sonra kaldır
+        scoreElement.classList.remove('score-update');
+    }, 500);
 }
 
 function updateLevelSystem() {
@@ -59,7 +60,7 @@ document.querySelectorAll(".task-button").forEach(button => {
     button.addEventListener("click", function () {
         const points = parseInt(this.getAttribute("data-points"), 10);
         score += points;
-        addXP(points / 10); // Puanın %10'u kadar XP ekleyin
+        addXP(points / 10);
         setLocalStorageItem('score', score);
         updateScore();
         this.disabled = true;
@@ -92,7 +93,7 @@ function startCountdown(displayElement) {
 
 document.getElementById("claim-button").addEventListener("click", () => {
     score += 5000;
-    addXP(500); // Örneğin mining sonucunda XP ekleyin
+    addXP(500);
     setLocalStorageItem('score', score);
     updateScore();
     disableClaimButton();
@@ -104,21 +105,6 @@ document.getElementById("claim-button").addEventListener("click", () => {
     startCountdown(countdownDisplay);
     launchConfetti();
 });
-
-// Sayfa yüklendiğinde başlat
-window.onload = () => {
-    updateScore();
-    updateLevelSystem();
-
-    const countdownDisplay = document.getElementById("countdown");
-    if (endTime > Date.now()) {
-        startCountdown(countdownDisplay);
-        disableClaimButton();
-    } else {
-        countdownDisplay.textContent = "Mining Completed!";
-        enableClaimButton();
-    }
-};
 
 // Konfeti animasyonu fonksiyonu
 function launchConfetti() {
@@ -160,11 +146,9 @@ function disableClaimButton() {
 
 // Sayfa geçişi fonksiyonu
 function switchPage(pageId) {
-    // Tüm sayfaları gizle
     const pages = document.querySelectorAll('#page-content > div');
     pages.forEach(page => page.style.display = 'none');
-    
-    // İlgili sayfayı göster
+
     const activePage = document.getElementById(pageId);
     activePage.style.display = 'block';
 }
@@ -172,31 +156,35 @@ function switchPage(pageId) {
 // Varsayılan sayfa: Home Page
 switchPage('home-page');
 
-// Butonlara tıklama olaylarını ekleyelim
-const navButtons = document.querySelectorAll('.nav-button');
-navButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const pageId = button.getAttribute('data-page');
-        switchPage(pageId);
-    });
-});
-
-// Telegram WebApp'i başlat
-window.Telegram.WebApp.ready();
-
-// Kullanıcı bilgilerini alma
-const telegramUser = window.Telegram.WebApp.initDataUnsafe.user;
-
-// Kullanıcı adı ya da ilk ad ve soyad bilgisi
-const username = telegramUser.username || `${telegramUser.first_name} ${telegramUser.last_name || ""}`;
-
-// Kullanıcı adını oyun ekranında gösterme
+// Sayfa yüklendiğinde başlat
 window.onload = () => {
-    const usernameDisplay = document.getElementById("username-display");
+    updateScore();
+    updateLevelSystem();
 
-    if (username) {
-        usernameDisplay.textContent = `Hoşgeldin, ${username}!`;
+    const countdownDisplay = document.getElementById("countdown");
+    if (endTime > Date.now()) {
+        startCountdown(countdownDisplay);
+        disableClaimButton();
     } else {
-        usernameDisplay.textContent = "Hoşgeldiniz!";
+        countdownDisplay.textContent = "Mining Completed!";
+        enableClaimButton();
+    }
+
+    // Kullanıcı adı alma ve DOM'a yazma
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        const username = tg.initDataUnsafe?.user?.username || "Hoşgeldiniz!";
+        const firstName = tg.initDataUnsafe?.user?.first_name || "";
+        const lastName = tg.initDataUnsafe?.user?.last_name || "";
+
+        if (username !== "Hoşgeldiniz!") {
+            usernameDisplay.textContent = `Hoşgeldiniz, @${username}!`;
+        } else if (firstName || lastName) {
+            usernameDisplay.textContent = `Hoşgeldiniz, ${firstName} ${lastName}!`;
+        }
+    } else {
+        console.error("Telegram WebApp API kullanılamıyor.");
     }
 };
