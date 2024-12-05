@@ -1,4 +1,3 @@
-/* Genel Stil Ayarları */
 * {
     margin: 0;
     padding: 0;
@@ -10,33 +9,28 @@ body {
     flex-direction: column;
     justify-content: space-between;
     min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Modern renk geçişi */
-    color: #333; /* Yazılar için koyu renk */
+    background-color: white;
+    font-family: Arial, sans-serif;
 }
 
-/* Ana Konteyner */
 #game-container {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 20px;
 }
 
-/* Footer Menü */
 #footer {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #fff;
+    background-color: #f1f1f1;
     padding: 10px 0;
     position: fixed;
     bottom: 0;
     width: 100%;
     border-top: 1px solid #ccc;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1); /* Hafif gölge */
 }
 
 .nav-button {
@@ -44,50 +38,162 @@ body {
     border: none;
     cursor: pointer;
     padding: 5px;
-    transition: transform 0.2s ease;
 }
 
 .nav-button img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 }
 
 .nav-button:hover img {
-    transform: scale(1.2); /* Hover efekti: Büyüme */
+    transform: scale(1.1); /* Hafif büyüme efekti */
+    transition: transform 0.3s ease;
 }
 
-/* Puan ve Seviye Sistemi */
-#score-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
-}
 
 #score {
-    display: flex;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 32px; /* Yazı boyutu */
+    margin-bottom: 20px;
     color: #4caf50; /* Yeşil renk */
-    background-color: rgba(255, 255, 255, 0.8); /* Hafif şeffaf arka plan */
-    border: 2px solid #4caf50;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.8); /* Hafif şeffaf beyaz arka plan */
+    border: 2px solid #4caf50; /* Yeşil kenarlık */
     border-radius: 8px;
     padding: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Gölge efekti */
+    display: flex; /* Flex kullanarak simge ile metni yan yana koymak için */
+    align-items: center; /* Dikey olarak ortala */
+    gap: 10px; /* Simge ile yazı arasına boşluk ekle */
 }
 
-#score svg {
-    margin-right: 10px;
+#score img {
+    width: 30px; /* Coin simgesi boyutu */
+    height: 30px;
+    margin-right: 10px; /* Metin ile simge arasındaki boşluk */
 }
 
+
+
+#logo {
+    width: 150px; /* Logonuzun boyutunu ayarlayabilirsiniz */
+    height: auto;
+}
+
+#mining-system {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#mining-box {
+    border: 2px solid #FFD700; /* Altın rengi çerçeve */
+    border-radius: 10px; /* Yuvarlatılmış köşeler */
+    padding: 20px; /* İç boşluk */
+    background-color: rgba(255, 215, 0, 0.1); /* Hafif altın rengi arka plan */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Gölgeler */
+}
+
+
+#countdown {
+    font-size: 28px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+#claim-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#claim-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+body {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Renk geçişi */
+    color: #030101; /* Metin rengini beyaz yap */
+}
+
+
+#earn-page {
+    background-color: #f9f9f9; /* Açık gri arka plan */
+    border: 1px solid #ccc; /* Kenar çizgisi */
+    padding: 20px; /* İçerik boşluğu */
+    border-radius: 10px; /* Yuvarlatılmış köşeler */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+}
+
+/* Görev kutusu stili */
+.task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9; /* Açık arka plan rengi */
+    border: 1px solid #ddd; /* Kenarlık */
+    border-radius: 30px; /* Yuvarlak köşeler */
+    padding: 25px 25px; /* İç boşluk */
+    margin: 10px 0; /* Dış boşluk */
+    width: 90%; /* Genişlik */
+    max-width: 300px; /* Maksimum genişlik */
+    font-size: 12px; /* Küçük yazı boyutu */
+}
+
+.social-icon {
+    width: 24px; /* Sosyal medya simgeleri boyutu */
+    height: 24px; /* Sosyal medya simgeleri boyutu */
+    margin-right: 10px; /* Sağ tarafta boşluk */
+}
+
+.task-button {
+    background-color: #4CAF50; /* Buton rengi */
+    color: white; /* Yazı rengi */
+    border: none; /* Kenarlık yok */
+    border-radius: 5px; /* Yuvarlak köşeler */
+    padding: 5px 10px; /* İç boşluk */
+    cursor: pointer; /* İmleç şekli */
+    font-size: 10px; /* Küçük yazı boyutu */
+}
+
+.task-button:hover {
+    background-color: #45a049; /* Hover etkisi */
+}
+
+
+.points {
+    margin-left: auto; /* Puanları sağa yerleştir */
+    font-weight: bold; /* Puan yazısını kalın yap */
+}
+
+/* Balon simgesi stili */
+.balloon-icon {
+    display: block;
+    margin: 20px auto; /* Ortala ve yukarıdan boşluk bırak */
+    width: 100px; /* Balon boyutunu ayarla */
+    height: auto;
+}
+
+/* Davet yazısı stili */
+.invite-header {
+    text-align: center;
+    font-size: 20px; /* Yazı boyutu */
+    margin-top: 20px; /* Balon resmi ile arasındaki boşluk */
+    color: #333; /* Yazı rengi */
+    font-weight: bold; /* Kalın yazı */
+}
+
+/* Level Sistemi Stilleri */
 #level-system {
     position: absolute;
     top: 10px;
     right: 10px;
     text-align: center;
-    width: 120px;
-    background-color: #fff;
+    width: 120px; /* Gösterge genişliği */
+    background-color: #f4f4f4;
     border-radius: 8px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -109,133 +215,114 @@ body {
 }
 
 #level-progress-bar {
-    width: 0%; /* Başlangıç */
+    width: 0%; /* Başlangıçta sıfır */
     height: 100%;
-    background-color: #4caf50; /* Yeşil renk */
-    transition: width 0.3s ease;
+    background-color: #4caf50; /* İlerleme çubuğu rengi */
+    transition: width 0.3s ease; /* Animasyon */
 }
 
-/* Logo */
-#logo {
-    width: 150px;
-    height: auto;
+/* Başarı emojisi için animasyon */
+.success-emoji {
+    font-size: 24px; /* Emoji boyutu */
+    position: absolute; /* Görev butonunun yanında belirecek */
+    animation: pop-up 1s ease-out, fade-out 1s ease-in 2s forwards;
+    color: #4CAF50; /* Başarı rengi */
+    margin-left: 10px; /* Emoji, butonun sağında görünsün */
+}
+
+/* Pop-up animasyonu */
+@keyframes pop-up {
+    0% {
+        transform: scale(0); /* Başlangıçta küçük */
+    }
+    50% {
+        transform: scale(1.2); /* Hafifçe büyüme */
+    }
+    100% {
+        transform: scale(1); /* Normal boyuta dönme */
+    }
+}
+
+/* Fade-out animasyonu */
+@keyframes fade-out {
+    0% {
+        opacity: 1; /* Görünür */
+    }
+    100% {
+        opacity: 0; /* Kaybolur */
+    }
+}
+
+#referral-container {
+    display: flex;
+    align-items: center;
     margin: 20px 0;
 }
 
-/* Mining Sistemi */
-#mining-system {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-#mining-box {
-    border: 2px solid #FFD700; /* Altın rengi */
-    border-radius: 10px;
-    padding: 20px;
-    background-color: rgba(255, 215, 0, 0.1); /* Hafif altın rengi */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Gölgeler */
-}
-
-#countdown {
-    font-size: 28px;
-    font-weight: bold;
-    color: #007bff;
-    margin-bottom: 15px;
-}
-
-#claim-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#claim-button:hover {
-    background-color: #0056b3;
-}
-
-#claim-button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
-}
-
-/* Görevler Sayfası */
-#earn-page {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Görev Kutuları */
-.task {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #f9f9f9;
+#referral-link {
+    width: 80%;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 10px;
-    margin: 10px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge */
-    transition: transform 0.2s ease;
-}
-
-.task:hover {
-    transform: translateY(-2px); /* Hover efekti: Hafif yukarı */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Hover gölgesi */
-}
-
-.social-icon {
-    width: 30px;
-    height: 30px;
     margin-right: 10px;
+    font-size: 14px;
 }
 
-.task-button {
-    background-color: #4caf50;
+#copy-link-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 8px 15px;
-    font-size: 12px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 14px;
 }
 
-.task-button:hover {
+#copy-link-button:hover {
     background-color: #45a049;
 }
 
-/* Arkadaş Sayfası */
-.balloon-icon {
-    display: block;
-    margin: 20px auto;
-    width: 80px;
-    height: auto;
+/* Bildirim kutusunun genel stilini ayarlıyoruz */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.invite-header {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 20px;
-    color: #333;
+.notification.show {
+    opacity: 1;
+}
+
+#rotating-ugr {
+    font-size: 25px;
     font-weight: bold;
+    color: #020e0e; /* İstediğiniz renk */
+    text-align: center;
+    margin-bottom: 20px;
+    animation: rotateUGR 5s linear infinite; /* 5 saniyede bir tam tur atacak şekilde ayarlandı */
+}
+
+/* Dönen animasyon */
+@keyframes rotateUGR {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 #user-info {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 5px 10px;
-    border-radius: 5px;
+    background: #0088cc; /* Telegram mavi rengi */
+    color: white;
 }
