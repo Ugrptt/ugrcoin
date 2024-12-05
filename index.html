@@ -13,26 +13,32 @@
         <div id="page-content">
             <!-- Home Page -->
             <div id="home-page">
-                <!-- Puan ve Seviye Gösterimi -->
-                <div id="score-container">
-                    <div id="score">
-                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="10" fill="#FFD700" />
-                            <text x="12" y="16" font-family="Arial" font-size="12" fill="white" text-anchor="middle">UGR</text>
-                        </svg>
-                        <span id="score-value">UGR: 0</span>
-                    </div>
-                    <div id="level-system">
-                        <span id="level-display">Level 1</span>
-                        <div id="level-progress-container">
-                            <div id="level-progress-bar"></div>
-                        </div>
+                <!-- Skor Alanı -->
+                <div id="score">
+                    <img src="coin.png" alt="Coin" />
+                    UGR: 0
+                </div>
+
+                <div id="user-info" style="
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                    background: rgba(255, 255, 255, 0.8);
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);">
+                    Kullanıcı bilgileri yükleniyor...
+                </div>
+
+
+                <!-- Level Sistemi -->
+                <div id="level-system">
+                    <span id="level-display">Level 1</span>
+                    <div id="level-progress-container">
+                        <div id="level-progress-bar"></div>
                     </div>
                 </div>
-                <div id="username-display" style="position: absolute; top: 10px; left: 10px; font-size: 18px; font-weight: bold; color: white;">
-                    Hoşgeldiniz!
-                </div>
-                
 
                 <!-- Logo -->
                 <img id="logo" src="logo.png" alt="Logo">
@@ -41,7 +47,6 @@
                 <div id="mining-system">
                     <div id="mining-box">
                         <h2>Mining Sistemi</h2>
-                        <p>Altın kazanmaya başla ve ödüller kazan!</p>
                         <div id="countdown">08:00:00</div>
                         <button id="claim-button">Claim & Start Mining</button>
                     </div>
@@ -49,23 +54,38 @@
             </div>
 
             <!-- Friends Page -->
-            <div id="friends-page" style="display: none;">
+            <div id="friends-page">
+                <h2>Davet Et ve Kazan</h2>
+                <p>Arkadaşlarını davet et, ödüller kazan! Kendi referans linkini paylaş:</p>
+                <div id="referral-container">
+                    <input type="text" id="referral-link" readonly>
+                    <button id="copy-link-button">Kopyala</button>
+                </div>
+                <div id="referral-stats">
+                    <p>Davet Edilen Kişi Sayısı: <span id="invite-count">0</span></p>
+                    <p>Bu Davetlerden Kazanılan Puan: <span id="invite-points">0</span></p>
+                </div>
+                <!-- Davet yazısı -->
                 <img src="balloon.png" alt="Balloon" class="balloon-icon">
                 <h2 class="invite-header">Davet ettiğiniz arkadaşlar</h2>
-                <p>Arkadaşlarınızı davet ederek ekstra UGR kazanın!</p>
             </div>
 
             <!-- Earn Page -->
-            <div id="earn-page" style="display: none;">
-                <h2>Puan Kazanma Görevleri</h2>
-                <p>Daha fazla UGR kazanmak için görevleri tamamla!</p>
-                <div class="task">
-                    <img src="twitter.png" alt="Twitter" class="social-icon">
-                    <span>Twitter'da Paylaş</span>
-                    <a href="https://twitter.com/share?url=YOUR_URL" target="_blank">
-                        <button class="task-button" data-points="1000">Görevi Tamamla (+1000 UGR)</button>
-                    </a>
-                </div>
+            <!-- Earn Page -->
+<div id="earn-page" style="display: none;">
+    <!-- Dönen UGR Yazısı -->
+    <div id="rotating-ugr">
+        UGR
+    </div>
+
+    <h2>Puan Kazanma Görevleri</h2>
+    <div class="task">
+        <img src="twitter.png" alt="Twitter" class="social-icon">
+        <span>Twitter'da Paylaş</span>
+        <a href="https://twitter.com/share?url=YOUR_URL" target="_blank">
+            <button class="task-button" data-points="1000">Görevi Tamamla (+1000 UGR)</button>
+        </a>
+    </div>
                 <div class="task">
                     <img src="telegram.png" alt="Telegram" class="social-icon">
                     <span>Telegram'da Katıl</span>
@@ -91,6 +111,14 @@
         </div>
     </div>
 
+    
+
+                        <!-- Bildirim Alanı -->
+<div id="notification" class="notification" style="display: none;">
+    <span id="notification-message"></span>
+</div>
+
+
     <!-- Alt Menü -->
     <div id="footer">
         <button class="nav-button" data-page="home-page">
@@ -103,6 +131,54 @@
             <img src="earn.png" alt="Earn">
         </button>
     </div>
+    
     <script src="script.js"></script>
+    <script>
+        // Referans linki oluşturulması
+        const userId = localStorage.getItem('userId') || generateUserId();
+        localStorage.setItem('userId', userId);
+
+        const referralLink = `https://t.me/ugrcoin_bot/ugrcoin?ref=${userId}`;
+        document.getElementById('referral-link').value = referralLink;
+
+        // Kopyalama işlemi
+        document.getElementById('copy-link-button').addEventListener('click', function() {
+            const linkInput = document.getElementById('referral-link');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // Mobil cihazlar için seçimi genişlet
+            document.execCommand("copy");
+            alert("Referans linki kopyalandı!");
+        });
+
+        // Benzersiz kullanıcı ID'si oluşturma fonksiyonu
+        function generateUserId() {
+            return Math.random().toString(36).substr(2, 9); // 9 karakterlik benzersiz bir ID
+        }
+
+        // Davet edilen kişileri takip etme
+        let inviteCount = parseInt(localStorage.getItem('inviteCount')) || 0;
+        let invitePoints = inviteCount * 500; // 500 puan her davet edilen kişi için
+
+        document.getElementById('invite-count').textContent = inviteCount;
+        document.getElementById('invite-points').textContent = invitePoints;
+
+        // Davet edilen kişi sayısı ve puan kazancı
+        function updateInviteStats() {
+            localStorage.setItem('inviteCount', inviteCount);
+            localStorage.setItem('invitePoints', invitePoints);
+            document.getElementById('invite-count').textContent = inviteCount;
+            document.getElementById('invite-points').textContent = invitePoints;
+        }
+
+        // Davet edilen kişileri sayma ve puan ekleme
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'invited') {
+                inviteCount++;
+                invitePoints = inviteCount * 500;
+                updateInviteStats();
+                alert('Başarıyla davet ettiniz!');
+            }
+        });
+    </script>
 </body>
 </html>
