@@ -14,18 +14,14 @@ let currentXP = getLocalStorageItem('currentXP', 0);
 let xpToNextLevel = level * 1000;
 
 // DOM elementleri
-const scoreElement = document.getElementById('score-value');
+const scoreElement = document.getElementById('score');
 const levelDisplay = document.getElementById("level-display");
 const progressBar = document.getElementById("level-progress-bar");
-const usernameDisplay = document.getElementById("username-display");
 
 // Skoru ve level sistemini güncelle
 function updateScore() {
-    scoreElement.textContent = `UGR: ${score}`;
-    scoreElement.classList.add('score-update');
-    setTimeout(() => {
-        scoreElement.classList.remove('score-update');
-    }, 500);
+    const formattedScore = formatScore(score); // Puanı formatla
+    scoreElement.innerHTML = `<img src="coin.png" alt="Coin" style="width: 30px; height: 30px; margin-right: 10px;"> ${formattedScore}`; // Coin PNG ile birlikte göster
 }
 
 function updateLevelSystem() {
@@ -60,7 +56,7 @@ document.querySelectorAll(".task-button").forEach(button => {
     button.addEventListener("click", function () {
         const points = parseInt(this.getAttribute("data-points"), 10);
         score += points;
-        addXP(points / 10);
+        addXP(points / 10); // Puanın %10'u kadar XP ekleyin
         setLocalStorageItem('score', score);
         updateScore();
         this.disabled = true;
@@ -93,7 +89,7 @@ function startCountdown(displayElement) {
 
 document.getElementById("claim-button").addEventListener("click", () => {
     score += 5000;
-    addXP(500);
+    addXP(500); // Örneğin mining sonucunda XP ekleyin
     setLocalStorageItem('score', score);
     updateScore();
     disableClaimButton();
@@ -105,6 +101,21 @@ document.getElementById("claim-button").addEventListener("click", () => {
     startCountdown(countdownDisplay);
     launchConfetti();
 });
+
+// Sayfa yüklendiğinde başlat
+window.onload = () => {
+    updateScore();
+    updateLevelSystem();
+
+    const countdownDisplay = document.getElementById("countdown");
+    if (endTime > Date.now()) {
+        startCountdown(countdownDisplay);
+        disableClaimButton();
+    } else {
+        countdownDisplay.textContent = "Mining Completed!";
+        enableClaimButton();
+    }
+};
 
 // Konfeti animasyonu fonksiyonu
 function launchConfetti() {
@@ -146,9 +157,11 @@ function disableClaimButton() {
 
 // Sayfa geçişi fonksiyonu
 function switchPage(pageId) {
+    // Tüm sayfaları gizle
     const pages = document.querySelectorAll('#page-content > div');
     pages.forEach(page => page.style.display = 'none');
-
+    
+    // İlgili sayfayı göster
     const activePage = document.getElementById(pageId);
     activePage.style.display = 'block';
 }
@@ -156,49 +169,168 @@ function switchPage(pageId) {
 // Varsayılan sayfa: Home Page
 switchPage('home-page');
 
-// **Tek bir window.onload fonksiyonunda tüm işlemleri birleştirdik**
-window.onload = () => {
-    // Skor ve seviye güncelleme
-    updateScore();
-    updateLevelSystem();
+// Butonlara tıklama olaylarını ekleyelim
+const navButtons = document.querySelectorAll('.nav-button');
+navButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const pageId = button.getAttribute('data-page');
+        switchPage(pageId);
+    });
+});
 
-    // Geri sayımı başlat
-    const countdownDisplay = document.getElementById("countdown");
-    if (endTime > Date.now()) {
-        startCountdown(countdownDisplay);
-        disableClaimButton();
-    } else {
-        countdownDisplay.textContent = "Mining Completed!";
-        enableClaimButton();
-    }
+// Başlangıç puanını göster
+function updateScore() {
+    const formattedScore = formatScore(score); // Puanı formatla
+    scoreElement.innerHTML = `<img src="coin.png" alt="Coin" style="width: 30px; height: 30px; margin-right: 10px;"> ${formattedScore}`; // Coin PNG ile birlikte göster
+}
 
-    // Telegram WebApp kullanıcı bilgilerini al ve DOM'a yaz
-    if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
+// Görev butonları
+const taskButtons = document.querySelectorAll(".task-button");
 
-        // WebApp hazır
-        tg.ready();
+// Bildirim gösterme fonksiyonu
+function showNotification(message, duration = 2000) {
+    const notificationElement = document.getElementById('notification');
+    const messageElement = document.getElementById('notification-message');
+    
+    // Mesajı ayarla ve bildirimi göster
+    messageElement.textContent = message;
+    notificationElement.style.display = 'block';
+    notificationElement.classList.add('show');
+    
+    // Bildirimin belirtilen süre sonunda kaybolmasını sağla
+    setTimeout(() => {
+        notificationElement.classList.remove('show');
+        setTimeout(() => {
+            notificationElement.style.display = 'none';
+        }, 500);
+    }, duration);
+}
 
-        // initDataUnsafe içeriğini kontrol et
-        console.log("initDataUnsafe:", tg.initDataUnsafe);
+// Görev tamamlama işlemi
+document.querySelectorAll(".task-button").forEach(button => {
+    button.addEventListener("click", function () {
+        const taskName = this.getAttribute("data-task");
+        const points = parseInt(this.getAttribute("data-points"), 10);
 
-        const userData = tg.initDataUnsafe?.user;
+        // Son tamamlama zamanını kontrol et
+        const lastCompleted = parseInt(localStorage.getItem(`${taskName}-lastCompleted`)) || 0;
+        const now = Date.now();
 
-        if (userData) {
-            console.log("Kullanıcı bilgileri:", userData);
-            const username = userData.username || "Hoşgeldiniz!";
-            const firstName = userData.first_name || "";
-            const lastName = userData.last_name || "";
-
-            if (username !== "Hoşgeldiniz!") {
-                usernameDisplay.textContent = `Hoşgeldiniz, @${username}!`;
-            } else if (firstName || lastName) {
-                usernameDisplay.textContent = `Hoşgeldiniz, ${firstName} ${lastName}!`;
-            }
-        } else {
-            console.error("Kullanıcı bilgileri alınamadı.");
+        if (now - lastCompleted < 24 * 60 * 60 * 1000) {
+            showNotification("Bu görevi 24 saat sonra tekrar tamamlayabilirsiniz!");
+            return;
         }
+
+        // Görev tamamlandı, puanı ekle
+        score += points;
+        addXP(points / 10); // Puanın %10'u kadar XP ekle
+        setLocalStorageItem('score', score);
+        updateScore();
+
+        // Tamamlama zamanını kaydet
+        localStorage.setItem(`${taskName}-lastCompleted`, now);
+
+        // Butonu devre dışı bırak ve başarı emojisi ekle
+        this.disabled = true;
+        this.innerText = "Tamamlandı!";
+        addSuccessEmoji(this);
+        
+        // Bilgilendirme mesajı göster
+        showNotification("Görev tamamlandı! 🎉");
+    });
+});
+
+// Link kopyalama işlemi
+document.getElementById('copy-link-button').addEventListener('click', () => {
+    const referralInput = document.getElementById('referral-link');
+    referralInput.select();
+    referralInput.setSelectionRange(0, 99999); // Mobil uyumlu seçme
+    document.execCommand('copy');
+
+    // Başarı emojisi göster
+    const emoji = document.createElement('span');
+    emoji.textContent = '🎉 Link kopyalandı!';
+    emoji.style.color = '#4CAF50';
+    emoji.style.fontSize = '14px';
+    emoji.style.marginLeft = '10px';
+    document.getElementById('referral-container').appendChild(emoji);
+
+    // Bir süre sonra emojiyi kaldır
+    setTimeout(() => {
+        emoji.remove();
+    }, 2000);
+
+    // Bilgilendirme mesajı göster
+    showNotification("Link başarıyla kopyalandı!");
+});
+
+
+// Sayı formatlama fonksiyonu
+function formatScore(score) {
+    if (score >= 1_000_000_000) {
+        return (score / 1_000_000_000).toFixed(1) + "B"; // Milyar (B)
+    } else if (score >= 1_000_000) {
+        return (score / 1_000_000).toFixed(1) + "M"; // Milyon (M)
+    } else if (score >= 1_000) {
+        return (score / 1_000).toFixed(1) + "K"; // Bin (K)
     } else {
-        console.error("Telegram WebApp API kullanılamıyor.");
+        return score.toString(); // 1000'in altında ise olduğu gibi göster
     }
-};
+}
+
+// Kullanıcı için benzersiz referans ID oluştur
+function generateReferralID() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // 6 haneli benzersiz ID
+}
+
+// Referans ID kontrol et ve oluştur
+let referralID = localStorage.getItem('referralID');
+if (!referralID) {
+    referralID = generateReferralID();
+    localStorage.setItem('referralID', referralID);
+}
+
+// Yeni referans linki oluştur (adı değiştirildi)
+const generatedReferralLink = `https://t.me/ugrcoin_bot/ugrcoin?ref=${referralID}`;
+document.getElementById('referral-link').value = generatedReferralLink;
+
+// Link kopyalama işlemi
+document.getElementById('copy-link-button').addEventListener('click', () => {
+    const referralInput = document.getElementById('referral-link');
+    referralInput.select();
+    referralInput.setSelectionRange(0, 99999); // Mobil uyumlu seçme
+    document.execCommand('copy');
+
+    // Başarı emojisi göster
+    const emoji = document.createElement('span');
+    emoji.textContent = '🎉 Link kopyalandı!';
+    emoji.style.color = '#4CAF50';
+    emoji.style.fontSize = '14px';
+    emoji.style.marginLeft = '10px';
+    document.getElementById('referral-container').appendChild(emoji);
+
+    // Bir süre sonra emojiyi kaldır
+    setTimeout(() => {
+        emoji.remove();
+    }, 2000);
+});
+
+// Telegram WebApp başlatma
+const tg = window.Telegram.WebApp;
+
+// Kullanıcı bilgilerini al
+const user = tg.initDataUnsafe.user;
+
+// Kullanıcı bilgilerini kontrol et ve göster
+if (user) {
+    const userInfoElement = document.getElementById('user-info');
+    const firstName = user.first_name || "Misafir";
+    const lastName = user.last_name || "";
+    const username = user.username ? `@${user.username}` : "";
+
+    // Kullanıcı bilgilerini sol üst köşede göster
+    userInfoElement.textContent = `Hoş geldin, ${firstName} ${lastName} ${username}`;
+} else {
+    console.error("Telegram kullanıcı bilgileri alınamadı!");
+    document.getElementById('user-info').textContent = "Kullanıcı bilgileri alınamadı.";
+}
