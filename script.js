@@ -54,13 +54,29 @@ function levelUp() {
 // Görev tamamlama
 document.querySelectorAll(".task-button").forEach(button => {
     button.addEventListener("click", function () {
+        const taskName = this.getAttribute("data-task");
         const points = parseInt(this.getAttribute("data-points"), 10);
+
+        const lastCompleted = parseInt(localStorage.getItem(`${taskName}-lastCompleted`)) || 0;
+        const now = Date.now();
+
+        if (now - lastCompleted < 24 * 60 * 60 * 1000) {
+            showNotification("Bu görevi 24 saat sonra tekrar tamamlayabilirsiniz!");
+            return;
+        }
+
         score += points;
-        addXP(points / 10); // Puanın %10'u kadar XP ekleyin
+        addXP(points / 10); // Puanın %10'u kadar XP ekle
         setLocalStorageItem('score', score);
         updateScore();
+
+        // Tamamlama zamanını kaydet
+        localStorage.setItem(`${taskName}-lastCompleted`, now);
+
+        // Butonu devre dışı bırak ve başarı emojisi ekle
         this.disabled = true;
-        this.innerText += " (Tamamlandı)";
+        this.innerText = "Tamamlandı!";
+        showNotification("Görev tamamlandı! 🎉");
     });
 });
 
@@ -101,21 +117,6 @@ document.getElementById("claim-button").addEventListener("click", () => {
     startCountdown(countdownDisplay);
     launchConfetti();
 });
-
-// Sayfa yüklendiğinde başlat
-window.onload = () => {
-    updateScore();
-    updateLevelSystem();
-
-    const countdownDisplay = document.getElementById("countdown");
-    if (endTime > Date.now()) {
-        startCountdown(countdownDisplay);
-        disableClaimButton();
-    } else {
-        countdownDisplay.textContent = "Mining Completed!";
-        enableClaimButton();
-    }
-};
 
 // Konfeti animasyonu fonksiyonu
 function launchConfetti() {
@@ -178,15 +179,6 @@ navButtons.forEach(button => {
     });
 });
 
-// Başlangıç puanını göster
-function updateScore() {
-    const formattedScore = formatScore(score); // Puanı formatla
-    scoreElement.innerHTML = `<img src="coin.png" alt="Coin" style="width: 30px; height: 30px; margin-right: 10px;"> ${formattedScore}`; // Coin PNG ile birlikte göster
-}
-
-// Görev butonları
-const taskButtons = document.querySelectorAll(".task-button");
-
 // Bildirim gösterme fonksiyonu
 function showNotification(message, duration = 2000) {
     const notificationElement = document.getElementById('notification');
@@ -205,65 +197,6 @@ function showNotification(message, duration = 2000) {
         }, 500);
     }, duration);
 }
-
-// Görev tamamlama işlemi
-document.querySelectorAll(".task-button").forEach(button => {
-    button.addEventListener("click", function () {
-        const taskName = this.getAttribute("data-task");
-        const points = parseInt(this.getAttribute("data-points"), 10);
-
-        // Son tamamlama zamanını kontrol et
-        const lastCompleted = parseInt(localStorage.getItem(`${taskName}-lastCompleted`)) || 0;
-        const now = Date.now();
-
-        if (now - lastCompleted < 24 * 60 * 60 * 1000) {
-            showNotification("Bu görevi 24 saat sonra tekrar tamamlayabilirsiniz!");
-            return;
-        }
-
-        // Görev tamamlandı, puanı ekle
-        score += points;
-        addXP(points / 10); // Puanın %10'u kadar XP ekle
-        setLocalStorageItem('score', score);
-        updateScore();
-
-        // Tamamlama zamanını kaydet
-        localStorage.setItem(`${taskName}-lastCompleted`, now);
-
-        // Butonu devre dışı bırak ve başarı emojisi ekle
-        this.disabled = true;
-        this.innerText = "Tamamlandı!";
-        addSuccessEmoji(this);
-        
-        // Bilgilendirme mesajı göster
-        showNotification("Görev tamamlandı! 🎉");
-    });
-});
-
-// Link kopyalama işlemi
-document.getElementById('copy-link-button').addEventListener('click', () => {
-    const referralInput = document.getElementById('referral-link');
-    referralInput.select();
-    referralInput.setSelectionRange(0, 99999); // Mobil uyumlu seçme
-    document.execCommand('copy');
-
-    // Başarı emojisi göster
-    const emoji = document.createElement('span');
-    emoji.textContent = '🎉 Link kopyalandı!';
-    emoji.style.color = '#4CAF50';
-    emoji.style.fontSize = '14px';
-    emoji.style.marginLeft = '10px';
-    document.getElementById('referral-container').appendChild(emoji);
-
-    // Bir süre sonra emojiyi kaldır
-    setTimeout(() => {
-        emoji.remove();
-    }, 2000);
-
-    // Bilgilendirme mesajı göster
-    showNotification("Link başarıyla kopyalandı!");
-});
-
 
 // Sayı formatlama fonksiyonu
 function formatScore(score) {
@@ -290,7 +223,7 @@ if (!referralID) {
     localStorage.setItem('referralID', referralID);
 }
 
-// Yeni referans linki oluştur (adı değiştirildi)
+// Yeni referans linki oluştur
 const generatedReferralLink = `https://t.me/ugrcoin_bot/ugrcoin?ref=${referralID}`;
 document.getElementById('referral-link').value = generatedReferralLink;
 
@@ -301,7 +234,6 @@ document.getElementById('copy-link-button').addEventListener('click', () => {
     referralInput.setSelectionRange(0, 99999); // Mobil uyumlu seçme
     document.execCommand('copy');
 
-    // Başarı emojisi göster
     const emoji = document.createElement('span');
     emoji.textContent = '🎉 Link kopyalandı!';
     emoji.style.color = '#4CAF50';
@@ -309,28 +241,7 @@ document.getElementById('copy-link-button').addEventListener('click', () => {
     emoji.style.marginLeft = '10px';
     document.getElementById('referral-container').appendChild(emoji);
 
-    // Bir süre sonra emojiyi kaldır
-    setTimeout(() => {
-        emoji.remove();
-    }, 2000);
+    setTimeout(() => emoji.remove(), 2000);
+
+    showNotification("Link başarıyla kopyalandı!");
 });
-
-// Telegram WebApp başlatma
-const tg = window.Telegram.WebApp;
-
-// Kullanıcı bilgilerini al
-const user = tg.initDataUnsafe.user;
-
-// Kullanıcı bilgilerini kontrol et ve göster
-if (user) {
-    const userInfoElement = document.getElementById('user-info');
-    const firstName = user.first_name || "Misafir";
-    const lastName = user.last_name || "";
-    const username = user.username ? `@${user.username}` : "";
-
-    // Kullanıcı bilgilerini sol üst köşede göster
-    userInfoElement.textContent = `Hoş geldin, ${firstName} ${lastName} ${username}`;
-} else {
-    console.error("Telegram kullanıcı bilgileri alınamadı!");
-    document.getElementById('user-info').textContent = "Kullanıcı bilgileri alınamadı.";
-}
